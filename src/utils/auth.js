@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'http://api.backend.students.nomoredomains.xyz';
+// export const BASE_URL = 'https://auth.nomoreparties.co';
 
 function checkResponse(res) {
   return res.ok ? res.json() : Promise.reject(`'Ошибка': ${res.status}`);

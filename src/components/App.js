@@ -48,8 +48,11 @@ function App() {
         });
       Api.getCards(cards)
         .then((data) => {
+          const cardArray = data.data;
           setCards(
-            data.map((card) => ({
+            cardArray.map((card) => 
+              ({
+            // data.map((card) => ({
               src: card.link,
               name: card.name,
               alt: card.name,
@@ -129,10 +132,8 @@ function App() {
   // }, []);
 
   function handleCardLike(card) {
-    console.log(card);
-    console.log(currentUser._id);
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    console.log(isLiked);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
+    console.log('test', card);
     Api.changeLikeCardStatus(card.id, !isLiked)
       .then((newCard) => {
         setCards((state) =>
@@ -190,6 +191,7 @@ function App() {
           localStorage.setItem("jwt", data.token);
 
           tokenCheck();
+          console.log('успешно');
         }
       })
       .catch((err) => {
@@ -206,10 +208,10 @@ function App() {
         .getContent(jwt)
         .then((res) => {
           if (res) {
-            setUserEmail(res.data.email);
+            setUserEmail(res.email);
+            // setUserEmail(res.data.email);
 
             setLoggedIn(true);
-            console.log(loggedIn);
           }
         })
         .catch((err) => {
@@ -258,14 +260,14 @@ function App() {
               <Footer />
             </ProtectedRoute>
             <Route path="/sign-up">
-            <Register handleRegister={handleRegister} link={"/sign-in"} />
+              <Register handleRegister={handleRegister} link={"/sign-in"} />
             </Route>
             <Route path="/sign-in" exact>
-            <Login handleLogin={handleLogin} />
-          </Route>
-          <Route>
-            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-          </Route>
+              <Login handleLogin={handleLogin} />
+            </Route>
+            <Route>
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            </Route>
           </Switch>
 
           <EditProfilePopup
@@ -293,9 +295,6 @@ function App() {
             statusImg={statusImg}
             onClose={closeAllPopups}
           />
-         
-          
-          
         </div>
       </body>
     </CurrentUserContext.Provider>
