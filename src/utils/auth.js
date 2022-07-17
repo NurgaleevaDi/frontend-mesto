@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.backend.students.nomoredomains.xyz';
+export const BASE_URL = 'https://api.backend.students.nomoredomains.xyz';
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
 function checkResponse(res) {

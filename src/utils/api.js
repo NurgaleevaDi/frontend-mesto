@@ -278,7 +278,7 @@ class Api{
 }
 
 const api = new Api({
-    address: 'http://api.backend.students.nomoredomains.xyz',
+    address: 'https://api.backend.students.nomoredomains.xyz',
     headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('jwt')}`
