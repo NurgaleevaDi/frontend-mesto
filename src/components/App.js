@@ -38,6 +38,7 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
+    tokenCheck()
     if (loggedIn) {
       Api.getUserData()
         .then((data) => {
