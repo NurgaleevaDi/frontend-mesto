@@ -226,16 +226,30 @@ class Api{
         }).then(this._handleResponse)
     }
 
-    profileEdit(name, about){
+    // profileEdit(name, about){
+    //     return fetch(`${this._address}/users/me`, {
+    //         method:'PATCH',
+    //         headers: this._headers,
+    //         body: JSON.stringify({
+    //             name: name,
+    //             about: about
+    //         })
+    //     }).then(this._handleResponse)
+    // }
+
+     profileEdit(user){
         return fetch(`${this._address}/users/me`, {
             method:'PATCH',
             headers: this._headers,
             body: JSON.stringify({
-                name: name,
-                about: about
+                name: user.name,
+                about: user.about
             })
         }).then(this._handleResponse)
     }
+
+
+
 
     addCard(name, link){
         return fetch(`${this._address}/cards`,{

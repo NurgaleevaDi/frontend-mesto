@@ -37,37 +37,7 @@ function App() {
   const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
 
-  useEffect(() => {
-    tokenCheck()
-    if (loggedIn) {
-      Api.getUserData()
-        .then((data) => {
-          setCurrentUser(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      Api.getCards(cards)
-        .then((data) => {
-          const cardArray = data.data;
-          setCards(
-            cardArray.map((card) => 
-              ({
-            // data.map((card) => ({
-              src: card.link,
-              name: card.name,
-              alt: card.name,
-              id: card._id,
-              owner: card.owner,
-              likes: card.likes,
-            }))
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [loggedIn]);
+ 
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
@@ -190,9 +160,8 @@ function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-
           tokenCheck();
-          console.log('успешно');
+          getData();
         }
       })
       .catch((err) => {
@@ -210,8 +179,6 @@ function App() {
         .then((res) => {
           if (res) {
             setUserEmail(res.email);
-            // setUserEmail(res.data.email);
-
             setLoggedIn(true);
           }
         })
@@ -227,11 +194,38 @@ function App() {
     history.push("/sign-in");
   }
 
-  useEffect(() => {
-    tokenCheck();
-  }, []);
+  const getData = () =>{
+    Promise.all([Api.getUserData(), Api.getCards()])
+      .then(([userData, cards]) => {
+        setCurrentUser(userData);
+        console.log('currentUser getData', currentUser);
+        setCards(cards.data.map((card) => ({
+          src: card.link,
+          name: card.name,
+          alt: card.name,
+          id: card._id,
+          owner: card.owner,
+          likes: card.likes,
+        })));
+      })
+      .catch((err) => console.log(err));
+  }
 
   useEffect(() => {
+    console.log('useEffect data ', loggedIn);
+    tokenCheck();
+    if (loggedIn) {
+      getData();
+    }
+  }, [loggedIn]);
+
+  // useEffect(() => {
+  //   console.log('useEffect tockenCheck ', loggedIn);
+  //   tokenCheck();
+  // }, []);
+
+  useEffect(() => {
+    console.log('useEffect history ', loggedIn);
     if (loggedIn) {
       history.push("/");
     }
