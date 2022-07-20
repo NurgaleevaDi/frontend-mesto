@@ -214,15 +214,21 @@ class Api{
         return Promise.reject(`Ошибка ${res.status} ${res.statusText}`)
     }
 
-    getUserData() {
+    getUserData(token) {
         return fetch(`${this._address}/users/me`,{
-            headers: this._headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
         }).then(this._handleResponse)
     }
 
-    getCards() {
+    getCards(token) {
         return fetch(`${this._address}/cards`, {
-            headers: this._headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
         }).then(this._handleResponse)
     }
 
@@ -237,10 +243,13 @@ class Api{
     //     }).then(this._handleResponse)
     // }
 
-     profileEdit(user){
+     profileEdit(user, token){
         return fetch(`${this._address}/users/me`, {
             method:'PATCH',
-            headers: this._headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 name: user.name,
                 about: user.about
@@ -248,13 +257,13 @@ class Api{
         }).then(this._handleResponse)
     }
 
-
-
-
-    addCard(name, link){
+    addCard(name, link, token){
         return fetch(`${this._address}/cards`,{
             method:'POST',
-            headers: this._headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 name: name,
                 link: link
@@ -262,27 +271,36 @@ class Api{
         }).then(this._handleResponse)
     }
 
-    deleteCard(cardId) {
+    deleteCard(cardId, token) {
         return fetch (`${this._address}/cards/${cardId}`,{
             method:'DELETE',
-            headers: this._headers
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
         }).then(this._handleResponse)
     
     }
 
-    changeLikeCardStatus(cardId, isLiked) {
+    changeLikeCardStatus(cardId, isLiked, token) {
         return fetch (`${this._address}/cards/${cardId}/likes`,{
             method: isLiked ? 'PUT' : 'DELETE',
-            headers: this._headers
+            headers:  {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
         }).then(this._handleResponse)   
     }
 
 
 
-    editUserAvatar(url){
+    editUserAvatar(url, token){
         return fetch(`${this._address}/users/me/avatar`,{
             method:'PATCH',
-            headers: this._headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({
                 avatar: url
             })
@@ -295,7 +313,7 @@ const api = new Api({
     address: 'https://api.backend.students.nomoredomains.xyz',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        // 'Authorization': `Bearer ${localStorage.getItem('jwt')}`
     },
   }); 
 

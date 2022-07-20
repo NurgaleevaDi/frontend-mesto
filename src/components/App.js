@@ -52,10 +52,10 @@ function App() {
     setSelectedCard({ name, link });
   }
   function handleUpdateUser(currentUser) {
-    console.log(currentUser);
-    Api.profileEdit(currentUser.name, currentUser.about)
+    const token = localStorage.getItem('jwt');
+    Api.profileEdit(currentUser, token)
       .then((data) => {
-        setCurrentUser(data);
+        setCurrentUser(data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -64,9 +64,10 @@ function App() {
   }
 
   function handleUpdateAvatar(currentUser) {
-    Api.editUserAvatar(currentUser.avatar)
+    const token = localStorage.getItem('jwt');
+    Api.editUserAvatar(currentUser.avatar, token)
       .then((data) => {
-        setCurrentUser(data);
+        setCurrentUser(data.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -105,7 +106,8 @@ function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i === currentUser._id);
     console.log('test', card);
-    Api.changeLikeCardStatus(card.id, !isLiked)
+    const token = localStorage.getItem('jwt');
+    Api.changeLikeCardStatus(card.id, !isLiked, token)
       .then((newCard) => {
         setCards((state) =>
           state.map((c) => (c._id === card.id ? newCard : c))
@@ -117,11 +119,16 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    Api.deleteCard(card.id)
+    console.log('card delete ', card);
+    const token = localStorage.getItem('jwt');
+    Api.deleteCard(card.id, token)
       .then((newCard) => {
-        setCards((state) =>
-          state.filter((c) => (c._id === card.id ? newCard : c))
-        );
+        console.log('newCard delete ', newCard);
+        setCards((state) => {
+          console.log('state ', state);
+          state.filter((c) => (c.id === card.id ? newCard.card : c)
+          );
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -129,9 +136,10 @@ function App() {
   }
 
   function handleAddPlaceSubmit(c) {
-    Api.addCard(c.name, c.link)
+    const token = localStorage.getItem('jwt');
+    Api.addCard(c.name, c.link, token)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        setCards([newCard.data, ...cards]);
         closeAllPopups();
       })
       .catch((err) => {
@@ -195,10 +203,10 @@ function App() {
   }
 
   const getData = () =>{
-    Promise.all([Api.getUserData(), Api.getCards()])
+    const token = localStorage.getItem('jwt');
+    Promise.all([Api.getUserData(token), Api.getCards(token)])
       .then(([userData, cards]) => {
         setCurrentUser(userData);
-        console.log('currentUser getData', currentUser);
         setCards(cards.data.map((card) => ({
           src: card.link,
           name: card.name,
