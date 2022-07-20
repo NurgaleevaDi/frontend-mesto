@@ -3,10 +3,8 @@ import trash from "../images/trash.svg";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Card(props) {
-  // console.log(props);
   const currentUser = React.useContext(CurrentUserContext);
-  // console.log('currentUser card ',currentUser);
-  const isOwn = (props.owner || props.owner._id) === currentUser._id;
+  const isOwn = props.owner === currentUser._id;
   
   const cardDeleteButtonClassName = `${
     isOwn ? "elements__button-delete" : "elements__button-delete_hidden"
@@ -39,7 +37,7 @@ function Card(props) {
       </button>
       <img
         className="elements__image"
-        src={props.src}
+        src={props.link || props.src}
         alt={props.alt}
         onClick={handleClick}
       />

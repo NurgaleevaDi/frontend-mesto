@@ -9,7 +9,6 @@ import ImagePopup from "./ImagePopup";
 import Login from "./Login";
 import Register from "./Register";
 import Api from "../utils/api.js";
-// import auth from '../utils/auth.js';
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
@@ -36,8 +35,6 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const history = useHistory();
-
- 
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
@@ -83,34 +80,14 @@ function App() {
     setStatusOpenPopup(false);
   }
 
-  // useEffect( () => {
-  // Api.getCards(cards).then((data) => {
-  //   setCards(
-  //     data.map((card) => ({
-  //       src: card.link,
-  //       name: card.name,
-  //       alt: card.name,
-  //       id: card._id,
-  //       owner: card.owner,
-  //       likes: card.likes,
-  //     })
-  //     )
-  //   )
-  // })
-  // .catch((err) =>{
-  //   console.log(err);
-  //   }
-  // );
-  // }, []);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i === currentUser._id);
-    console.log('test', card);
     const token = localStorage.getItem('jwt');
-    Api.changeLikeCardStatus(card.id, !isLiked, token)
+    Api.changeLikeCardStatus((card.id || card._id), !isLiked, token)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card.id ? newCard : c))
+        setCards((state) => 
+          state.map((c) => (c.id === card.id ? newCard.data : c))
         );
       })
       .catch((err) => {
@@ -119,16 +96,12 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    console.log('card delete ', card);
     const token = localStorage.getItem('jwt');
-    Api.deleteCard(card.id, token)
+    Api.deleteCard((card.id || card._id), token)
       .then((newCard) => {
-        console.log('newCard delete ', newCard);
-        setCards((state) => {
-          console.log('state ', state);
-          state.filter((c) => (c.id === card.id ? newCard.card : c)
-          );
-        });
+        setCards((state) => 
+          state.filter((c) => (c.id === card.id ? newCard.card.card : c))
+        )
       })
       .catch((err) => {
         console.log(err);
